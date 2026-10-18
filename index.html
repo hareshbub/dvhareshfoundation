@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dv.Haresh Foundation - Portal</title>
+<style>
+  /* --- SWISS STYLE VARIABLES (BLUE PALETTE) --- */
+  :root {
+    --bg-color: #0A2B56;
+    --text-color: #FFFFFF;
+    --error-color: #FF3B30;
+    --accent-color: #FFFFFF;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* --- TOP NOTICE --- */
+  .global-notice {
+    position: absolute;
+    top: 4vh;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    z-index: 100;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+
+  /* --- LAYOUT & TYPOGRAPHY --- */
+  .step {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;
+    padding: 8vh 6vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .step.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .step-header {
+    margin-bottom: 4vh;
+    width: 100%;
+  }
+
+  .step-indicator {
+    font-size: 1.2rem;
+    font-weight: 700;
+    opacity: 0.5;
+    margin-bottom: 2vh;
+    letter-spacing: 0.1em;
+  }
+
+  h1 {
+    font-size: clamp(3rem, 12vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+    margin-bottom: 4vh;
+  }
+
+  /* --- FORMS & INPUTS --- */
+  .form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    margin-bottom: 4vh;
+    overflow-y: auto;
+    max-height: 60vh;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-group label {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    opacity: 0.8;
+  }
+
+  input, textarea {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-color);
+    font-size: 1.5rem;
+    padding: 12px 0;
+    font-weight: 500;
+    outline: none;
+    border-radius: 0;
+    text-align: center;
+    transition: border-color 0.3s ease;
+  }
+
+  input:focus, textarea:focus {
+    border-bottom: 3px solid var(--text-color);
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .error-msg {
+    color: var(--error-color);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    text-transform: uppercase;
+    display: none;
+  }
+
+  /* --- STAR RATING --- */
+  .star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .star-rating input {
+    display: none;
+  }
+
+  .star-rating label {
+    font-size: 3.5rem;
+    color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.1s ease;
+    opacity: 1;
+    margin: 0;
+  }
+
+  .star-rating label:active {
+    transform: scale(0.85);
+  }
+
+  .star-rating input:checked ~ label,
+  .star-rating label:hover,
+  .star-rating label:hover ~ label {
+    color: var(--accent-color);
+  }
+
+  /* --- BUTTONS --- */
+  .btn {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    border: none;
+    width: 100%;
+    max-width: 400px;
+    padding: 24px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.1s ease, background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn:hover {
+    background-color: #E0E0E0;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* --- SUCCESS PAGE & ANIMATION --- */
+  .success-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    overflow-y: auto;
+    padding: 4vh 0;
+  }
+
+  .checkmark {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 4;
+    stroke: var(--text-color);
+    stroke-miterlimit: 10;
+    margin: 0 auto 2vh auto;
+    box-shadow: inset 0px 0px 0px var(--bg-color);
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+  }
+
+  .checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 4;
+    stroke-miterlimit: 10;
+    stroke: var(--text-color);
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  }
+
+  .checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+  }
+
+  @keyframes stroke {
+    100% { stroke-dashoffset: 0; }
+  }
+  @keyframes scale {
+    0%, 100% { transform: none; }
+    50% { transform: scale3d(1.1, 1.1, 1); }
+  }
+  @keyframes fill {
+    100% { box-shadow: inset 0px 0px 0px 60px var(--text-color); }
+  }
+
+  .checkmark.filled .checkmark__check {
+    stroke: var(--bg-color);
+  }
+
+  .certificate-preview {
+    max-width: 100%;
+    max-height: 40vh;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    margin: 2vh 0 4vh 0;
+    display: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  .success-title {
+    font-size: 2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 1vh;
+  }
+
+  .success-subtitle {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+  }
+</style>
+</head>
+<body>
+
+  <!-- GLOBAL TOP NOTICE -->
+  <div class="global-notice" id="globalNotice">ALL INFORMATIONS ARE USED FOR CERTIFICATE VERIFICATION</div>
+
+  <!-- PAGE 1: AUTHENTICATION -->
+  <section class="step" id="page1">
+    <div class="step-header">
+      <h1>Dv.Haresh<br>Foundation</h1>
+    </div>
+
+    <div class="form-content">
+      <div class="input-group">
+        <label for="uniqueId">Unique Code</label>
+        <input type="password" id="uniqueId" autocomplete="off">
+        <div id="codeError" class="error-msg">INVALID CODE</div>
+      </div>
+    </div>
+
+    <button class="btn" onclick="validatePage1()">Proceed</button>
+  </section>
+
+  <!-- PAGE 2: DETAILS -->
+  <section class="step" id="page2">
+    <div class="step-header">
+      <div class="step-indicator">01 / 02</div>
+      <h1>Identity</h1>
+    </div>
+
+    <div class="form-content">
+      <div class="input-group">
+        <label for="fullName">Full Name *</label>
+        <input type="text" id="fullName" required>
+      </div>
+      <div class="input-group">
+        <label for="collegeName">Institution / College *</label>
+        <input type="text" id="collegeName" required>
+      </div>
+      <div class="input-group">
+        <label for="phoneNumber">Phone Number *</label>
+        <input type="tel" id="phoneNumber" required>
+      </div>
+      <div class="input-group">
+        <label for="emailId">Email Address *</label>
+        <input type="email" id="emailId" required>
+      </div>
+      <div id="detailsError" class="error-msg">ALL FIELDS ARE MANDATORY</div>
+    </div>
+
+    <button class="btn" onclick="validatePage2()">Continue</button>
+  </section>
+
+  <!-- PAGE 3: REVIEW & SUBMIT -->
+  <section class="step" id="page3">
+    <div class="step-header">
+      <div class="step-indicator">02 / 02</div>
+      <h1>Review</h1>
+    </div>
+
+    <div class="form-content">
+      <div class="input-group">
+        <label>Experience Rating *</label>
+        <div class="star-rating">
+          <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+          <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+          <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+          <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+          <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+        </div>
+      </div>
+      <div class="input-group">
+        <label for="feedback">Feedback *</label>
+        <textarea id="feedback" rows="3" required></textarea>
+      </div>
+      <div id="reviewError" class="error-msg">PLEASE PROVIDE RATING AND FEEDBACK</div>
+    </div>
+
+    <button class="btn" id="submitBtn" onclick="submitForm()">SUBMIT</button>
+  </section>
+
+  <!-- SUCCESS PAGE (PREVIEW & DOWNLOAD) -->
+  <section class="step" id="pageSuccess">
+    <div class="success-container">
+      <svg class="checkmark filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+      </svg>
+      <div class="success-title">RECORDED</div>
+      <div class="success-subtitle" id="successMsg">Here is your certificate</div>
+
+      <!-- The Base64 image gets injected here -->
+      <img id="certificateImage" class="certificate-preview" alt="Generated Certificate">
+
+      <!-- The download link for the image -->
+      <a id="downloadBtn" class="btn" style="display: none;">Save Certificate</a>
+    </div>
+  </section>
+
+<script>
+  // UPDATE THIS URL TO YOUR VERCEL DOMAIN WHEN GOING LIVE
+  const ENGINE_URL = "https://your-vercel-project.vercel.app/api/generate";
+  const GOOGLE_FORM_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSc0GM8OxRgI2bAZOHEfPJcI7Sn_fXOIZuhCxSdPIyhdhPSbQw/formResponse";
+
+  // CHECK SESSION STORAGE ON LOAD
+  window.onload = () => {
+    if (sessionStorage.getItem('certificate_submitted') === 'true') {
+      document.getElementById('globalNotice').style.opacity = '0';
+      document.getElementById('successMsg').innerText = "Submission already recorded.";
+      document.getElementById('pageSuccess').classList.add('active');
+    } else {
+      document.getElementById('page1').classList.add('active');
+    }
+  };
+
+  function goToStep(stepId) {
+    document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+    document.getElementById(stepId).classList.add('active');
+
+    if(stepId === 'pageSuccess') {
+      document.getElementById('globalNotice').style.opacity = '0';
+    }
+  }
+
+  // Page 1
+  function validatePage1() {
+    const codeInput = document.getElementById('uniqueId').value.trim().toUpperCase();
+    const errorMsg = document.getElementById('codeError');
+
+    if (codeInput === 'ELC WEBINAR' || codeInput === 'ELCWEBINAR') {
+      errorMsg.style.display = 'none';
+      goToStep('page2');
+    } else {
+      errorMsg.style.display = 'block';
+    }
+  }
+
+  // Page 2
+  function validatePage2() {
+    const name = document.getElementById('fullName').value.trim();
+    const college = document.getElementById('collegeName').value.trim();
+    const phone = document.getElementById('phoneNumber').value.trim();
+    const email = document.getElementById('emailId').value.trim();
+    const errorMsg = document.getElementById('detailsError');
+
+    if (name && college && phone && email) {
+      errorMsg.style.display = 'none';
+      goToStep('page3');
+    } else {
+      errorMsg.style.display = 'block';
+    }
+  }
+
+  // Page 3 & Submission
+  async function submitForm() {
+    const ratingInput = document.querySelector('input[name="rating"]:checked');
+    const feedback = document.getElementById('feedback').value.trim();
+    const errorMsg = document.getElementById('reviewError');
+    const submitBtn = document.getElementById('submitBtn');
+
+    if (!ratingInput || !feedback) {
+      errorMsg.style.display = 'block';
+      return;
+    }
+
+    errorMsg.style.display = 'none';
+    submitBtn.textContent = "PROCESSING...";
+    submitBtn.disabled = true;
+
+    // 1. Gather Data for Certificate Engine (JSON)
+    const studentData = {
+      fullName: document.getElementById('fullName').value.trim(),
+      collegeName: document.getElementById('collegeName').value.trim(),
+      phoneNumber: document.getElementById('phoneNumber').value.trim(),
+      emailId: document.getElementById('emailId').value.trim(),
+      rating: ratingInput.value,
+      feedback: feedback
+    };
+
+    // 2. Gather Data for Google Forms (FormData)
+    const googleFormData = new FormData();
+    googleFormData.append("entry.1066356620", "ELC WEBINAR");
+    googleFormData.append("entry.1872723866", studentData.fullName);
+    googleFormData.append("entry.1168967077", studentData.collegeName);
+    googleFormData.append("entry.1110252065", studentData.phoneNumber);
+    googleFormData.append("entry.1710093823", studentData.emailId);
+    googleFormData.append("entry.1653897863", studentData.rating);
+    googleFormData.append("entry.896679269", studentData.feedback);
+
+    try {
+      // Fire Google Forms request silently in the background
+      fetch(GOOGLE_FORM_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: googleFormData
+      }).catch(err => console.error("Google Forms Sync Failed:", err));
+
+      // Await Vercel Certificate Engine Request
+      const response = await fetch(ENGINE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(studentData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error("Server responded with an error.");
+      }
+
+      // Display the certificate in the UI
+      const certImg = document.getElementById('certificateImage');
+      const downloadBtn = document.getElementById('downloadBtn');
+
+      certImg.src = data.image; // Apply Base64 image
+      certImg.style.display = 'block';
+
+      downloadBtn.href = data.image; // Attach Base64 to download link
+      downloadBtn.download = `${data.code}.png`; // Name the file HF-PC-XXXX.png
+      downloadBtn.style.display = 'block';
+
+      // Lock form and transition to success page
+      sessionStorage.setItem('certificate_submitted', 'true');
+      goToStep('pageSuccess');
+
+    } catch (error) {
+      console.error("Submission failed:", error);
+      submitBtn.textContent = "SUBMIT";
+      submitBtn.disabled = false;
+      alert("Network Error. Please ensure the Certificate Engine is running.");
+    }
+  }
+</script>
+</body>
+</html>
